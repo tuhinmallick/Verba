@@ -62,8 +62,7 @@ def import_data(path_str: str, model: str):
         file_contents = load_directory(data_path)
 
     if file_contents:
-        documents = convert_files(client, file_contents, nlp=nlp)
-        if documents:
+        if documents := convert_files(client, file_contents, nlp=nlp):
             chunks = chunk_docs(documents, nlp)
             uuid_map = import_documents(client=client, documents=documents)
             import_chunks(client=client, chunks=chunks, doc_uuid_map=uuid_map)

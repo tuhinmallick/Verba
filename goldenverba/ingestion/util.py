@@ -78,7 +78,7 @@ def hash_string(text: str) -> str:
     sha256.update(text.encode())
 
     # Return the hexadecimal representation of the hash
-    return str(sha256.hexdigest())
+    return sha256.hexdigest()
 
 
 def import_documents(client: Client, documents: list[Doc]) -> dict:

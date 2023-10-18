@@ -23,13 +23,12 @@ def fetch_docs(owner, repo, folder_path, token=None) -> list:
     response = requests.get(url, headers=headers)
     response.raise_for_status()  # Raise an exception for HTTP errors
 
-    md_files = [
+    return [
         item["path"]
         for item in response.json()["tree"]
         if item["path"].startswith(folder_path)
         and (item["path"].endswith(".md") or item["path"].endswith(".mdx"))
     ]
-    return md_files
 
 
 def download_file(owner, repo, file_path, token=None) -> str:

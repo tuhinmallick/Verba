@@ -108,7 +108,7 @@ def filtering(document_path: str, document_type: str) -> bool:
     @parameter document_type : str - Document Type
     @returns bool - Flag whether they should be included or not
     """
-    if document_type == "Documentation" or document_type == "Blog":
+    if document_type in {"Documentation", "Blog"}:
         return document_filtering(document_path)
     else:
         return True
@@ -139,7 +139,7 @@ def cleaning(document_str: str, document_type: str) -> str:
     @returns str - The preprocessed and cleaned document text
     """
 
-    if document_type == "Documentation" or document_type == "Blog":
+    if document_type in {"Documentation", "Blog"}:
         return document_cleaning(document_str)
 
     return document_str
@@ -182,7 +182,7 @@ def process_filename(file_path: str, document_type: str) -> str:
     @parameter document_type : str - Document Type
     @returns str - The preprocessed filename
     """
-    if document_type == "Documentation" or document_type == "Blog":
+    if document_type in {"Documentation", "Blog"}:
         return document_process_filename(file_path)
     else:
         return file_path
@@ -231,18 +231,16 @@ def process_url(file_path: str, document_type: str, document_text: str = "") -> 
     """
     processed_url = ""
 
-    if document_type == "Documentation":
-        processed_url = document_process_url(file_path)
-    elif document_type == "Blog":
+    if document_type == "Blog":
         processed_url = blog_process_url(document_text)
+    elif document_type == "Documentation":
+        processed_url = document_process_url(file_path)
     else:
-        base_url = "https://weaviate.io/"
-
         # Remove the file extension
         without_extension = os.path.splitext(file_path)[0]
 
         # Concatenate the base_url with the modified path
-        full_url = os.path.join(base_url, without_extension)
+        full_url = os.path.join("https://weaviate.io/", without_extension)
 
         processed_url = full_url
 

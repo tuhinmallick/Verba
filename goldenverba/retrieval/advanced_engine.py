@@ -74,9 +74,8 @@ class AdvancedVerbaQueryEngine(SimpleVerbaQueryEngine):
 
             doc_name_map[result["doc_name"]][result["chunk_id"]] = result
 
-        for doc in doc_name_map:
-            chunk_map = doc_name_map[doc]
-            window = 1
+        window = 1
+        for doc, chunk_map in doc_name_map.items():
             added_chunks = {}
             for chunk in chunk_map:
                 chunk_id = int(chunk)
@@ -135,7 +134,7 @@ class AdvancedVerbaQueryEngine(SimpleVerbaQueryEngine):
                 for k in sorted(doc_name_map[doc], key=lambda x: int(x))
             }
             msg.info(f"{doc}: {len(sorted_dict)} chunks")
-            for chunk in sorted_dict:
-                context += sorted_dict[chunk]["text"]
+            for value in sorted_dict.values():
+                context += value["text"]
 
         return context
