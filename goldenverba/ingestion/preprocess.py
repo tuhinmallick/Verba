@@ -58,9 +58,7 @@ def chunk_doc(
     while i < len(doc):
         start_idx = i
         end_idx = i + split_length
-        if end_idx > len(doc):
-            end_idx = len(doc)  # Adjust for the last chunk
-
+        end_idx = min(end_idx, len(doc))
         doc_chunk = nlp.make_doc(doc[start_idx:end_idx].text)
         doc_chunk.user_data = doc.user_data.copy()
         doc_chunk.user_data["_split_id"] = split_id_counter
@@ -204,7 +202,4 @@ def check_if_file_exits(client: Client, doc_name: str) -> bool:
         .do()
     )
 
-    if results["data"]["Get"]["Document"]:
-        return True
-    else:
-        return False
+    return bool(results["data"]["Get"]["Document"])

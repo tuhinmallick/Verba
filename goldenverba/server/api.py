@@ -123,7 +123,7 @@ async def query(payload: QueryPayload):
             }
         )
     except Exception as e:
-        msg.fail(f"Query failed")
+        msg.fail("Query failed")
         print(e)
         return JSONResponse(
             content={
@@ -177,7 +177,7 @@ async def get_document(payload: GetDocumentPayload):
 ## Retrieve all documents imported to Weaviate
 @app.post("/api/get_all_documents")
 async def get_all_documents():
-    msg.info(f"Get all documents request received")
+    msg.info("Get all documents request received")
 
     try:
         documents = verba_engine.retrieve_all_documents()

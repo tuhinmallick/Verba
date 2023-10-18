@@ -49,11 +49,10 @@ class SimpleVerbaQueryEngine(VerbaQueryEngine):
         @parameter doc_id : str - Document ID
         @returns dict - Document dict
         """
-        document = VerbaQueryEngine.client.data_object.get_by_id(
+        return VerbaQueryEngine.client.data_object.get_by_id(
             doc_id,
             class_name="Document",
         )
-        return document
 
     def retrieve_all_documents(self) -> list:
         """Return all documents from Weaviate
@@ -67,8 +66,7 @@ class SimpleVerbaQueryEngine(VerbaQueryEngine):
             .with_limit(1000)
             .do()
         )
-        results = query_results["data"]["Get"]["Document"]
-        return results
+        return query_results["data"]["Get"]["Document"]
 
     def search_documents(self, query: str) -> list:
         """Search for documents from Weaviate
@@ -84,8 +82,7 @@ class SimpleVerbaQueryEngine(VerbaQueryEngine):
             .with_limit(20)
             .do()
         )
-        results = query_results["data"]["Get"]["Document"]
-        return results
+        return query_results["data"]["Get"]["Document"]
 
     # Custom methods
 
@@ -134,11 +131,7 @@ class SimpleVerbaQueryEngine(VerbaQueryEngine):
         """
         with VerbaQueryEngine.client.batch as batch:
             batch.batch_size = 1
-            properties = {
-                "query": str(query),
-                "results": json.dumps(results),
-                "system": system,
-            }
+            properties = {"query": query, "results": json.dumps(results), "system": system}
             msg.good(f"Saved to cache for query {query}")
             VerbaQueryEngine.client.batch.add_data_object(properties, "Cache")
 
@@ -158,15 +151,11 @@ class SimpleVerbaQueryEngine(VerbaQueryEngine):
             .do()
         )
 
-        results = query_results["data"]["Get"]["Suggestion"]
-
-        if not results:
+        if results := query_results["data"]["Get"]["Suggestion"]:
+            return [
+                result["suggestion"]
+                for result in results
+                if float(result["_additional"]["score"]) > 0.5
+            ]
+        else:
             return []
-
-        suggestions = []
-
-        for result in results:
-            if float(result["_additional"]["score"]) > 0.5:
-                suggestions.append(result["suggestion"])
-
-        return suggestions
